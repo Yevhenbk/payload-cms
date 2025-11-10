@@ -1,9 +1,0 @@
-{
-  "buildCommand": "pnpm run build",
-  "installCommand": "pnpm install",
-  "env": {
-    "PAYLOAD_SECRET": "@payload-secret",
-    "DATABASE_URI": "@database-uri",
-    "NEXT_PUBLIC_SERVER_URL": "@next-public-server-url"
-  }
-}
