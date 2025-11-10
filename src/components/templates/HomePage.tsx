@@ -3,8 +3,6 @@
  * @module components/templates/HomePage
  */
 
-'use client'
-
 import Link from 'next/link'
 import { LoginForm, PostForm, PostList } from '@/components/organisms'
 import { UserGreeting } from '@/components/molecules'
