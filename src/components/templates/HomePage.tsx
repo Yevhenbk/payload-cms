@@ -9,18 +9,19 @@ import Link from 'next/link'
 import { LoginForm, PostForm, PostList } from '@/components/organisms'
 import { UserGreeting } from '@/components/molecules'
 import { Button } from '@/components/atoms'
-import type { User, Post } from '@/types'
+import type { User, Post, Category } from '@/types'
 
 export interface HomePageProps {
   user: User | null
   posts: Post[]
+  categories: Category[]
   onLogout: () => void
 }
 
 /**
  * Enterprise-grade HomePage template
  */
-export const HomePage: React.FC<HomePageProps> = ({ user, posts, onLogout }) => {
+export const HomePage: React.FC<HomePageProps> = ({ user, posts, categories, onLogout }) => {
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
@@ -71,7 +72,7 @@ export const HomePage: React.FC<HomePageProps> = ({ user, posts, onLogout }) => 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Post Form */}
           <div className="lg:col-span-1">
-            <PostForm onSuccess={() => window.location.reload()} />
+            <PostForm categories={categories} onSuccess={() => window.location.reload()} />
           </div>
 
           {/* Right Column - Post List */}

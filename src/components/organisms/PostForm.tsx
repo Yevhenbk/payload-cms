@@ -6,20 +6,21 @@
 'use client'
 
 import { useState } from 'react'
-import { Input, Textarea, Button } from '@/components/atoms'
+import { Input, Textarea, Button, Checkbox } from '@/components/atoms'
 import { createPost } from '@/server/actions/createPost'
-import type { PostFormData, FormErrors } from '@/types'
+import type { PostFormData, FormErrors, Category } from '@/types'
 import { validatePostForm } from '@/utils/validation'
 import { generateSlug } from '@/utils/string'
 
 export interface PostFormProps {
+  categories: Category[]
   onSuccess?: () => void
 }
 
 /**
  * Enterprise-grade PostForm component
  */
-export const PostForm: React.FC<PostFormProps> = ({ onSuccess }) => {
+export const PostForm: React.FC<PostFormProps> = ({ categories, onSuccess }) => {
   const [formData, setFormData] = useState<PostFormData>({
     title: '',
     slug: '',
@@ -57,6 +58,20 @@ export const PostForm: React.FC<PostFormProps> = ({ onSuccess }) => {
     }
     if (serverError) setServerError('')
     if (successMessage) setSuccessMessage('')
+  }
+
+  const handleCategoryToggle = (categoryId: string) => {
+    setFormData((prev) => {
+      const currentCategories = prev.categories || []
+      const isSelected = currentCategories.includes(categoryId)
+
+      return {
+        ...prev,
+        categories: isSelected
+          ? currentCategories.filter((id) => id !== categoryId)
+          : [...currentCategories, categoryId],
+      }
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -154,6 +169,25 @@ export const PostForm: React.FC<PostFormProps> = ({ onSuccess }) => {
             required
             disabled={isSubmitting}
           />
+
+          {/* Categories */}
+          {categories.length > 0 && (
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Categories</label>
+              <div className="grid grid-cols-2 gap-2">
+                {categories.map((category) => (
+                  <Checkbox
+                    key={category.id}
+                    label={category.title}
+                    name={`category-${category.id}`}
+                    checked={(formData.categories || []).includes(category.id)}
+                    onChange={() => handleCategoryToggle(category.id)}
+                    disabled={isSubmitting}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-3 pt-4">
             <Button type="submit" variant="primary" disabled={isSubmitting} className="flex-1">

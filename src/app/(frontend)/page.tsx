@@ -5,7 +5,7 @@ import React from 'react'
 import config from '@/payload.config'
 import { HomePage } from '@/components/templates'
 import { logoutUser } from '@/server/actions/logoutUser'
-import type { Post, User } from '@/types'
+import type { Post, User, Category } from '@/types'
 import './styles.css'
 
 /**
@@ -19,6 +19,7 @@ const Page = async () => {
 
   // Fetch posts if user is authenticated
   let posts: Post[] = []
+  let categories: Category[] = []
 
   if (user) {
     const postsData = await payload.find({
@@ -27,9 +28,22 @@ const Page = async () => {
       sort: '-createdAt',
     })
     posts = postsData.docs as Post[]
+
+    const categoriesData = await payload.find({
+      collection: 'categories',
+      limit: 100,
+    })
+    categories = categoriesData.docs as Category[]
   }
 
-  return <HomePage user={user as User | null} posts={posts} onLogout={logoutUser} />
+  return (
+    <HomePage
+      user={user as User | null}
+      posts={posts}
+      categories={categories}
+      onLogout={logoutUser}
+    />
+  )
 }
 
 export default Page
